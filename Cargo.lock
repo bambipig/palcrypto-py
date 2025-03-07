@@ -367,7 +367,7 @@ checksum = "c08d65885ee38876c4f86fa503fb49d7b507c2b62552df7c70b2fce627e06381"
 
 [[package]]
 name = "palcrypto-py"
-version = "0.1.1"
+version = "0.2.5"
 dependencies = [
  "palcrypto-rs",
  "pyo3",
@@ -375,9 +375,9 @@ dependencies = [
 
 [[package]]
 name = "palcrypto-rs"
-version = "0.2.4"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c8b5bc17ae8e98da9be8f48fde173a0cf52488d4d572f199dec379972292bf8"
+checksum = "c95642c4f7feae797f0a11c8c8c083b13aff52511f298ece485eb00baccdd2c8"
 dependencies = [
  "aes-gcm",
  "anyhow",
