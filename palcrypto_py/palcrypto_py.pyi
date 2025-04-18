@@ -32,5 +32,13 @@ def cb_decrypt(
         encrypted_bytes: bytes,
         nonce_len: Optional[int]) -> bytes: ...
 
+def cb_sign(
+    my_pal_crypto_secret_key_bytes: bytes,
+    msg: bytes) -> bytes: ...
+
+def cb_verify_sign(
+    public_key_bytes: bytes,
+    msg: bytes,
+    signature_bytes: bytes) -> bool: ...
 
 def argon2_pwd_hash(password: bytes) -> bytes: ...
