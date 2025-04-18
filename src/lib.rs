@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 use palcrypto_rs::aes_crypto::{generate_pal_aes_key, pal_aes_decrypt, pal_aes_encrypt};
-use palcrypto_rs::crypto_box_crypto::{generate_pal_key_pair, pal_cb_decrypt, pal_cb_encrypt};
+use palcrypto_rs::crypto_box_crypto::{generate_pal_key_pair, pal_cb_decrypt, pal_cb_encrypt, pal_cb_sign, pal_cb_verify_sign};
 use palcrypto_rs::hash::argon2_password_hash;
 
 #[pyfunction]
@@ -49,6 +49,7 @@ impl CbKeyPair {
         Ok(self.public_key_bytes.clone())
     }
 
+
     #[getter]
     fn private_key_bytes(&self) -> PyResult<Vec<u8>>{
         Ok(self.private_key_bytes.clone())
@@ -81,10 +82,23 @@ fn cb_decrypt(
 }
 
 #[pyfunction]
+fn cb_sign(my_pal_crypto_secret_key_bytes: Vec<u8>, msg: Vec<u8>) -> PyResult<Vec<u8>> {
+    let signature_bytes = pal_cb_sign(my_pal_crypto_secret_key_bytes.as_slice(), msg.as_slice()).unwrap();
+    Ok(signature_bytes)
+}
+
+#[pyfunction]
+fn cb_verify_sign(public_key_bytes: Vec<u8>, msg: Vec<u8>, signature_bytes: Vec<u8>,) -> PyResult<bool> {
+    let ok = pal_cb_verify_sign(public_key_bytes.as_slice(), msg.as_slice(), signature_bytes.as_slice()).unwrap();
+    Ok(ok)
+}
+
+#[pyfunction]
 fn argon2_pwd_hash(password: Vec<u8>) -> PyResult<Vec<u8>>{
     let hash_output_bytes = argon2_password_hash(password.as_slice()).unwrap();
     Ok(hash_output_bytes)
 }
+
 
 /// A Python module implemented in Rust.
 #[pymodule]
@@ -97,6 +111,8 @@ fn palcrypto_py(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(generate_cb_key_pair, m)?)?;
     m.add_function(wrap_pyfunction!(cb_encrypt, m)?)?;
     m.add_function(wrap_pyfunction!(cb_decrypt, m)?)?;
+    m.add_function(wrap_pyfunction!(cb_sign, m)?)?;
+    m.add_function(wrap_pyfunction!(cb_verify_sign, m)?)?;
 
     m.add_function(wrap_pyfunction!(argon2_pwd_hash, m)?)?;
     Ok(())
